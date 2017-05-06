@@ -65,5 +65,35 @@ namespace SeleniumTests
 
             page.SearchInfoTech();            
         }
+
+        [TestMethod]
+        public void CityOfPocatello()
+        {
+            Driver.Url = "https://id-pocatello.civicplushrms.com/CPExternal/Jobs.aspx";
+
+            var page = new CityOfPocatello(Driver);
+
+            page.SearchInfoTech();
+        }
+
+        [TestMethod]
+        public void LDSIdaho()
+        {
+            Driver.Url = "https://careers.lds.org/search/Public/Search.aspx";
+
+            var page = new LDS(Driver);
+
+            page.SearchIdahoInfoTech();
+        }
+
+        [TestMethod]
+        public void LDSUtah()
+        {
+            Driver.Url = "https://careers.lds.org/search/Public/Search.aspx";
+
+            var page = new LDS(Driver);
+
+            page.SearchUtahInfoTech();
+        }
     }
 }

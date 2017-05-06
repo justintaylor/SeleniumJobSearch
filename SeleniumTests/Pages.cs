@@ -65,7 +65,7 @@ namespace SeleniumTests
 
         [FindsBy(How = How.Id, Using = "jsb_f_position_s")]
         [CacheLookup]
-        private IWebElement Category  { get; set; }
+        private IWebElement Category { get; set; }
         // selectElement implementation from: http://stackoverflow.com/questions/31613763/how-to-initialize-selectelements-while-using-pagefactory-findsby-in-selenium-c/31615591#31615591
         public SelectElement CategorySelect
         {
@@ -99,7 +99,7 @@ namespace SeleniumTests
         public IdahoCentralCreditUnion(IWebDriver driver)
         {
             this.driver = driver;
-            
+
             PageFactory.InitElements(driver, this);
 
             // wait for the page to load
@@ -122,7 +122,7 @@ namespace SeleniumTests
             // focus to the iframe
             driver.SwitchTo().Frame(frame);
 
-            CategorySelect.SelectByValue(selection); 
+            CategorySelect.SelectByValue(selection);
             LocationSelect.SelectByValue(locationValue);
 
             Search.Click();
@@ -142,6 +142,184 @@ namespace SeleniumTests
                 default:
                     Assert.Fail("An unexpected string was encountered: " + Message.Text);
                     break;
+            }
+        }
+    }
+
+    public class CityOfPocatello
+    {
+        private IWebDriver driver;
+        private WebDriverWait wait;
+
+        public string url = "https://id-pocatello.civicplushrms.com/CPExternal/Jobs.aspx";
+
+        private string locationsValue = "844";
+        private string noOpenings = "No job openings currently available.";
+
+        [FindsBy(How = How.Id, Using = "ddlLocations")]
+        [CacheLookup]
+        private IWebElement Locations { get; set; }
+        public SelectElement LocationsSelect
+        {
+            get { return new SelectElement(Locations); }
+        }
+
+        [FindsBy(How = How.Id, Using = "Searchresult")]
+        [CacheLookup]
+        private IWebElement SearchResult { get; set; }
+
+        [FindsBy(How = How.ClassName, Using = "prev")]
+        [CacheLookup]
+        private IWebElement Previous { get; set; }
+
+        public CityOfPocatello(IWebDriver driver)
+        {
+            this.driver = driver;
+
+            PageFactory.InitElements(driver, this);
+
+            // wait for the page to load
+            wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+            wait.Until(d => Previous.Displayed);
+        }
+
+        public void SearchInfoTech()
+        {
+            LocationsSelect.SelectByValue(locationsValue);
+
+            if (SearchResult.Text == noOpenings)
+            {
+                driver.Close();
+
+                Assert.Inconclusive("no openings at this time");
+            }
+        }
+    }
+
+    public class LDS
+    {
+        private IWebDriver driver;
+        private WebDriverWait wait;
+
+        public LDS(IWebDriver driver)
+        {
+            this.driver = driver;
+
+            PageFactory.InitElements(driver, this);
+
+            // wait for the page to load
+            wait = new WebDriverWait(driver, TimeSpan.FromSeconds(15));
+            wait.Until(d => Search.Displayed);
+        }
+
+        private string zeroResults = "0 results";
+
+        [FindsBy(How = How.Id, Using = "ctl00_m_g_3f46ec34_e362_4676_8aa8_2b87e4a9900b_btnSearchRight")]
+        [CacheLookup]
+        private IWebElement Search { get; set; }
+
+
+        [FindsBy(How = How.CssSelector, Using = "[data-id=ctl00_m_g_3f46ec34_e362_4676_8aa8_2b87e4a9900b_ddlCountry]")]
+        [CacheLookup]
+        private IWebElement Country { get; set; }
+
+        [FindsBy(How = How.CssSelector, Using = "div.ddlcountry .dropdown-menu.open ul li:nth-child(1) a")]
+        [CacheLookup]
+        private IWebElement CountryDropdown { get; set; }
+
+        [FindsBy(How = How.CssSelector, Using = "div.ddlcountry .dropdown-menu.open ul li:nth-child(123) a")]
+        [CacheLookup]
+        private IWebElement CountryUSA { get; set; }
+
+        // --------------------------------------------------
+
+        [FindsBy(How = How.CssSelector, Using = "[data-id=ddlLocation]")]
+        [CacheLookup]
+        private IWebElement Location { get; set; }
+
+        [FindsBy(How = How.CssSelector, Using = "#recruitingLocationDiv .dropdown-menu")]
+        [CacheLookup]
+        private IWebElement LocationDropdown { get; set; }
+
+        [FindsBy(How = How.CssSelector, Using = "#recruitingLocationDiv .dropdown-menu ul li:nth-child(21) a")]
+        [CacheLookup]
+        private IWebElement LocationInputIdaho { get; set; }
+
+        [FindsBy(How = How.CssSelector, Using = "#recruitingLocationDiv .dropdown-menu ul li:nth-child(55) a")]
+        [CacheLookup]
+        private IWebElement LocationInputUtah { get; set; }
+
+        // --------------------------------------------------
+
+        [FindsBy(How = How.CssSelector, Using = "[data-id=ctl00_m_g_3f46ec34_e362_4676_8aa8_2b87e4a9900b_ddlJobFamily]")]
+        [CacheLookup]
+        private IWebElement JobFamily { get; set; }
+
+        [FindsBy(How = How.CssSelector, Using = "#ctl00_m_g_3f46ec34_e362_4676_8aa8_2b87e4a9900b > div.row.search-area > div.col-lg-3.col-md-4.col-sm-4 > div:nth-child(3) > div:nth-child(2) > div > div > div > ul > li:nth-child(1) > a")]
+        [CacheLookup]
+        private IWebElement JobFamilyDropdown { get; set; }
+
+        [FindsBy(How = How.CssSelector, Using = "#ctl00_m_g_3f46ec34_e362_4676_8aa8_2b87e4a9900b > div.row.search-area > div.col-lg-3.col-md-4.col-sm-4 > div:nth-child(3) > div:nth-child(2) > div > div > div > ul > li:nth-child(15) > a")]
+        [CacheLookup]
+        private IWebElement JobFamilyInfoTech { get; set; }
+
+        // --------------------------------------------------
+
+        [FindsBy(How = How.Id, Using = "ctl00_m_g_3f46ec34_e362_4676_8aa8_2b87e4a9900b_lblNumResults")]
+        [CacheLookup]
+        private IWebElement ResultsCount { get; set; }
+        
+        public void SearchIdahoInfoTech()
+        {
+            Country.Click();
+            wait.Until(d => CountryDropdown.Displayed);
+            CountryUSA.Click();
+
+            Location.Click();
+            wait.Until(d => LocationDropdown.Displayed);
+            LocationInputIdaho.SendKeys(Keys.Space);
+
+            JobFamily.Click();
+            wait.Until(d => JobFamilyDropdown.Displayed);
+            JobFamilyInfoTech.SendKeys(Keys.Space);
+
+            Search.Click();
+
+            wait.Until(d => ResultsCount.Text.Contains("results"));
+
+            if (ResultsCount.Text == zeroResults)
+            {
+                driver.Close();
+
+                Assert.Inconclusive("no openings at this time");
+            }
+        }
+
+        public void SearchUtahInfoTech()
+        {
+            Country.Click();
+            wait.Until(d => CountryDropdown.Displayed);
+            CountryUSA.Click();
+
+            wait.Until(d => Location.Displayed);
+
+            Location.Click();
+            wait.Until(d => LocationDropdown.Displayed);
+            LocationInputUtah.SendKeys(Keys.Space);
+
+            JobFamily.Click();
+            wait.Until(d => JobFamilyDropdown.Displayed);
+            JobFamilyInfoTech.SendKeys(Keys.Space);
+
+            Search.Click();
+
+            wait.Until(d => ResultsCount.Text.Contains("results"));
+
+            if (ResultsCount.Text == zeroResults)
+            {
+                driver.Close();
+
+                Assert.Inconclusive("no openings at this time");
             }
         }
     }
