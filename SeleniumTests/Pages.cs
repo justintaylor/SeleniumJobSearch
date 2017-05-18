@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OpenQA.Selenium;
+using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Support.UI;
 using OpenQA.Selenium.Support.PageObjects;
 
@@ -323,4 +324,160 @@ namespace SeleniumTests
             }
         }
     }
+
+    public class Intermountain
+    {
+        private IWebDriver driver;
+        private WebDriverWait wait;
+
+        public Intermountain(IWebDriver driver)
+        {
+            this.driver = driver;
+
+            PageFactory.InitElements(driver, this);
+
+            // wait for the page to load
+            wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+            wait.Until(d => Expertise.Displayed);
+        }
+
+        private string noJobs = "There were no jobs matching this query.";
+
+        [FindsBy(How = How.Id, Using = "res_newjoblist__res_candcriteria-a1ExpertisegcC__Field")]
+        [CacheLookup]
+        private IWebElement Expertise { get; set; }
+        public SelectElement ExpertiseSelect
+        {
+            get { return new SelectElement(Expertise); }
+        }
+
+        [FindsBy(How = How.CssSelector, Using = ".cc-content .clearfix .primary")]
+        [CacheLookup]
+        private IWebElement Search { get; set; }
+
+        [FindsBy(How = How.CssSelector, Using = ".cc-content .search-summary")]
+        [CacheLookup]
+        private IWebElement SearchSummary { get; set; }
+
+        public void SearchInfoTech()
+        {
+            ExpertiseSelect.SelectByValue("10000007"); // Information Technology
+
+            Search.Click();
+            wait.Until(d => SearchSummary.Displayed);
+            
+            // determine if results were shown
+            if (SearchSummary.Text == noJobs)
+            {
+                Assert.Inconclusive("no openings at this time");
+                driver.Close();
+            }            
+        }
+    }
+
+    public class Simplot
+    {
+        private IWebDriver driver;
+        private WebDriverWait wait;
+
+        public Simplot(IWebDriver driver)
+        {
+            this.driver = driver;
+
+            PageFactory.InitElements(driver, this);
+
+            // Switch to the iframe
+            wait = new WebDriverWait(driver, TimeSpan.FromSeconds(25));
+            wait.Until(d => d.FindElement(By.Id(frame)).Displayed);
+            driver.SwitchTo().Frame(frame);
+
+            // wait for the page to load
+            wait.Until(d => FirstRow.Displayed);
+        }
+
+        private string frame = "parentIframe";
+        private string infoTech = "Information Technology";
+
+        [FindsBy(How = How.CssSelector, Using = ".grid-canvas .slick-row:first-of-type")]
+        [CacheLookup]
+        private IWebElement FirstRow { get; set; }
+
+        [FindsBy(How = How.CssSelector, Using = "#uxcategoryContainer input")]
+        //[CacheLookup]
+        private IWebElement Category { get; set; }
+
+        [FindsBy(How = How.CssSelector, Using = "#uxcategoryContainer button")]
+        [CacheLookup]
+        private IWebElement CategoryButton { get; set; }
+
+        [FindsBy(How = How.CssSelector, Using = "#uxcategoryContainer input")]
+        [CacheLookup]
+        private IWebElement CategoryDropdown { get; set; }
+
+        [FindsBy(How = How.CssSelector, Using = "#ui-id-4 ul")]
+        [CacheLookup]
+        private IWebElement Categories { get; set; }
+        
+        public void SearchInfoTech()
+        {
+            // wait for results to show
+            wait.Until(d => FirstRow.Displayed);
+
+            // filter results
+            CategoryButton.Click();
+            wait.Until(d => Categories.Displayed);
+
+            // Loop to hilight info tech
+            for( int i = 0; i < 15; i++)
+            {
+                CategoryDropdown.SendKeys(Keys.ArrowDown);
+
+                if (Category.GetAttribute("value") == infoTech)
+                {
+                    break;
+                }
+            }
+
+            CategoryDropdown.SendKeys(Keys.Enter);
+
+            // verify correct selection was made
+            if (Category.GetAttribute("value") != infoTech)
+            {
+                Assert.Fail(infoTech + " is not selected");
+            }
+
+            Assert.Fail("Test is incomplete");
+
+        }
+    }
+    /*
+       public class <site>
+       {
+           private IWebDriver driver;
+           private WebDriverWait wait;
+
+           public <site>(IWebDriver driver)
+           {
+               this.driver = driver;
+
+               PageFactory.InitElements(driver, this);
+
+               // wait for the page to load
+               wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+               wait.Until(d => <element to watch for>.Displayed);
+           }
+
+           [FindsBy(How = How, Using = "")]
+           [CacheLookup]
+           private IWebElement <element> { get; set; }
+
+           [FindsBy(How = How, Using = "")]
+           [CacheLookup]
+           private IWebElement <element> { get; set; }
+           public SelectElement <element>Select
+           {
+               get { return new SelectElement(<element>); }
+           }
+       }
+   */
 }

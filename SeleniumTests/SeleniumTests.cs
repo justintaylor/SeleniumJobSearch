@@ -95,5 +95,31 @@ namespace SeleniumTests
 
             page.SearchUtahInfoTech();
         }
+
+        [TestMethod]
+        public void Intermountain()
+        {
+            Driver.Url = "https://jobs.intermountainhealthcare.org/res_joblist.html";
+
+            var page = new Intermountain(Driver);
+
+            page.SearchInfoTech();
+        }
+
+        [TestMethod]
+        public void Simplot()
+        {
+            Driver.Url = "https://jrsext.simplot.com/prodhcm/CandidateSelfService/controller.servlet?context.dataarea=prodhcm&webappname=CandidateSelfService&context.session.key.HROrganization=JRS&context.session.key.JobBoard=EXTERNAL2&_saveKeys=true&context.session.key.noheader=true";
+
+            var page = new Simplot(Driver);
+
+            page.SearchInfoTech();
+        }
+        /* TO ADD:
+         * https://jrsext.simplot.com/prodhcm/CandidateSelfService/controller.servlet?context.dataarea=prodhcm&webappname=CandidateSelfService&context.session.key.HROrganization=JRS&context.session.key.JobBoard=EXTERNAL2&_saveKeys=true&context.session.key.noheader=true
+         * https://jobs.labcorp.com/category/information-technology-jobs/668/4482/1 // do url, then filter by ID and UT
+         * http://www.barrettbusiness.com/branches/location/ID/idaho-falls
+         * https://rn21.ultipro.com/FJM1000/JobBoard/SearchJobs.aspx?Page=Search // Maverik - search Job Family For IT and Technical
+         */
     }
 }
