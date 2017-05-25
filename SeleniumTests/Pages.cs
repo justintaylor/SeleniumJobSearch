@@ -397,6 +397,7 @@ namespace SeleniumTests
 
         private string frame = "parentIframe";
         private string infoTech = "Information Technology";
+        private string noRecords = "No Records Found";
 
         [FindsBy(How = How.CssSelector, Using = ".grid-canvas .slick-row:first-of-type")]
         [CacheLookup]
@@ -410,14 +411,27 @@ namespace SeleniumTests
         [CacheLookup]
         private IWebElement CategoryButton { get; set; }
 
-        [FindsBy(How = How.CssSelector, Using = "#uxcategoryContainer input")]
-        [CacheLookup]
-        private IWebElement CategoryDropdown { get; set; }
-
         [FindsBy(How = How.CssSelector, Using = "#ui-id-4 ul")]
         [CacheLookup]
         private IWebElement Categories { get; set; }
         
+        protected virtual By CategoriesListSelector
+        {
+            get { return By.CssSelector("#ui-id-4 ul li"); }
+        }
+
+        [FindsBy(How = How.ClassName, Using = "slick-pager-status")]
+        [CacheLookup]
+        private IWebElement Status { get; set; }
+
+        [FindsBy(How = How.Id, Using = "searchBtn")]
+        [CacheLookup]
+        private IWebElement Search { get; set; }
+
+        [FindsBy(How = How.Id, Using = "SearchResult")]
+        [CacheLookup]
+        private IWebElement SearchResult { get; set; }
+
         public void SearchInfoTech()
         {
             // wait for results to show
@@ -427,24 +441,24 @@ namespace SeleniumTests
             CategoryButton.Click();
             wait.Until(d => Categories.Displayed);
 
-            // Loop to hilight info tech
-            for( int i = 0; i < 15; i++)
+            // highlight info tech
+            IList<IWebElement> categories = driver.FindElements(CategoriesListSelector);
+            categories.First(e => e.Text.Contains(infoTech)).Click();
+
+            Search.Click();
+
+            // wait for page to load results
+            wait.Until(d => SearchResult.Displayed);
+
+            // determine if results were shown
+            if (Status.Text == noRecords)
             {
-                CategoryDropdown.SendKeys(Keys.ArrowDown);
-
-                if (Category.GetAttribute("value") == infoTech)
-                {
-                    break;
-                }
+                Assert.Inconclusive("no openings at this time");
+                driver.Close();
             }
+        }
+    }
 
-            CategoryDropdown.SendKeys(Keys.Enter);
-
-            // verify correct selection was made
-            if (Category.GetAttribute("value") != infoTech)
-            {
-                Assert.Fail(infoTech + " is not selected");
-            }
 
             Assert.Fail("Test is incomplete");
 
