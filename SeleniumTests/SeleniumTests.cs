@@ -115,11 +115,24 @@ namespace SeleniumTests
 
             page.SearchInfoTech();
         }
+
+        [TestMethod]
+        public void LabCorp()
+        {
+            Driver.Url = "https://jobs.labcorp.com/category/information-technology-jobs/668/4482/1";
+
+            var page = new LabCorp(Driver);
+
+            page.SearchStates();
+        }
+
         /* TO ADD:
-         * https://jrsext.simplot.com/prodhcm/CandidateSelfService/controller.servlet?context.dataarea=prodhcm&webappname=CandidateSelfService&context.session.key.HROrganization=JRS&context.session.key.JobBoard=EXTERNAL2&_saveKeys=true&context.session.key.noheader=true
          * https://jobs.labcorp.com/category/information-technology-jobs/668/4482/1 // do url, then filter by ID and UT
          * http://www.barrettbusiness.com/branches/location/ID/idaho-falls
          * https://rn21.ultipro.com/FJM1000/JobBoard/SearchJobs.aspx?Page=Search // Maverik - search Job Family For IT and Technical
+         * http://www.onsemi.com/PowerSolutions/content.do?id=16367 // ON Semiconductor
+         * https://apply.fbijobs.gov/ // FBI 
+         * https://employment.wellsfargo.com/psp/PSEA/APPLICANT_NW/HRMS/c/HRS_HRAM.HRS_APP_SCHJOB.GBL?FOCUS=Applicant // Wells Fargo
          */
     }
 }

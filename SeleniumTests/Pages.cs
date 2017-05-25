@@ -459,9 +459,81 @@ namespace SeleniumTests
         }
     }
 
+    public class LabCorp
+    {
+        private IWebDriver driver;
+        private WebDriverWait wait;
 
-            Assert.Fail("Test is incomplete");
+        public LabCorp(IWebDriver driver)
+        {
+            this.driver = driver;
 
+            PageFactory.InitElements(driver, this);
+
+            // wait for the page to load
+            wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+            wait.Until(d => SearchResults.Displayed);
+        }
+
+        [FindsBy(How = How.Id, Using = "search-results")]
+        [CacheLookup]
+        private IWebElement SearchResults { get; set; }
+
+        [FindsBy(How = How.Id, Using = "region-toggle")]
+        [CacheLookup]
+        private IWebElement StateExpander { get; set; }
+
+        [FindsBy(How = How.CssSelector, Using = "#search-filters section:nth-of-type(2) ul")]
+        [CacheLookup]
+        private IWebElement StatesList { get; set; }
+
+        protected virtual By StatesListSelector
+        {
+            get { return By.CssSelector("#search-filters section:nth-of-type(2) ul li"); }
+        }
+
+        [FindsBy(How = How.Id, Using = "applied-filters-label")]
+        [CacheLookup]
+        private IWebElement FilterLabel { get; set; }
+
+        [FindsBy(How = How.Id, Using = "#search-results-list ul")]
+        [CacheLookup]
+        private IWebElement ResultsList { get; set; }
+
+        public void SearchStates()
+        {
+            // close the window if UT and ID are not shown in the states list
+
+            StateExpander.Click();
+            wait.Until(d => StatesList.Displayed);
+
+            // get list of states
+            IList<IWebElement> states = driver.FindElements(StatesListSelector);
+            var idaho = states.FirstOrDefault(e => e.Text.Contains("Idaho"));
+            var utah = states.FirstOrDefault(e => e.Text.Contains("Utah"));
+
+            if(idaho == null && utah == null)
+            {
+                // no results exist within Idaho and Utah, close window
+                driver.Close();
+
+                Assert.Inconclusive("No jobs exist within Idaho and Utah");
+            }
+
+            // narrow list results
+            if (idaho != null)
+            {
+                idaho.Click();
+            }
+
+            if (utah != null)
+            {
+                utah.Click();
+            }
+
+            wait.Until(d => FilterLabel.Displayed);
+
+            Assert.IsTrue(ResultsList.Displayed, "No results were shown");
         }
     }
     /*
