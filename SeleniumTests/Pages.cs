@@ -536,6 +536,77 @@ namespace SeleniumTests
             Assert.IsTrue(ResultsList.Displayed, "No results were shown");
         }
     }
+
+    public class Maverik
+    {
+        private IWebDriver driver;
+        private WebDriverWait wait;
+
+        public Maverik(IWebDriver driver)
+        {
+            this.driver = driver;
+
+            PageFactory.InitElements(driver, this);
+
+            // wait for the page to load
+            wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
+            wait.Until(d => Submit.Displayed) ;
+        }
+
+        private string IT = "21";
+        private string Tech = "31";
+
+        [FindsBy(How = How.Id, Using = "Submit")]
+        [CacheLookup]
+        private IWebElement Submit { get; set; }
+
+        [FindsBy(How = How.Id, Using = "Req_JobFamilyFK")]
+        [CacheLookup]
+        private IWebElement JobFamily { get; set; }
+        public SelectElement JobFamilySelect
+        {
+            get { return new SelectElement(JobFamily); }
+        }
+
+        [FindsBy(How = How.Id, Using = "lblPageTitle")]
+        [CacheLookup]
+        private IWebElement BrowseJobsHeader { get; set; }
+
+        [FindsBy(How = How.CssSelector, Using = "table.GridTable")]
+        [CacheLookup]
+        private IWebElement ResultsTable { get; set; }
+
+        [FindsBy(How = How.CssSelector, Using = ".PrintMedium")]
+        [CacheLookup]
+        private IWebElement ResultsMessage { get; set; }
+
+        public void SearchTech()
+        {
+            Search(Tech);
+        }
+
+        public void SearchIT()
+        {
+            Search(IT);
+        }
+
+        private void Search(string category)
+        {
+            JobFamilySelect.SelectByValue(category);
+
+            Submit.Click();
+
+            wait.Until(d => BrowseJobsHeader.Displayed);
+
+            // check for most likely element, which in this case is a no results message
+            if(ResultsMessage.Displayed)
+            {
+                driver.Close();
+
+                Assert.Inconclusive("No results were shown");
+            }
+        }
+    }
     /*
        public class <site>
        {
@@ -550,7 +621,7 @@ namespace SeleniumTests
 
                // wait for the page to load
                wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
-               wait.Until(d => <element to watch for>.Displayed);
+               wait.Until(d => <element_to_watch_for>.Displayed);
            }
 
            [FindsBy(How = How, Using = "")]

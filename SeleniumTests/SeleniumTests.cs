@@ -126,10 +126,27 @@ namespace SeleniumTests
             page.SearchStates();
         }
 
+        [TestMethod]
+        public void MaverikTechnical()
+        {
+            Driver.Url = "https://rn21.ultipro.com/FJM1000/JobBoard/SearchJobs.aspx?Page=Search";
+
+            var page = new Maverik(Driver);
+
+            page.SearchTech();
+        }
+
+        [TestMethod]
+        public void MaverikIT()
+        {
+            Driver.Url = "https://rn21.ultipro.com/FJM1000/JobBoard/SearchJobs.aspx?Page=Search";
+
+            var page = new Maverik(Driver);
+
+            page.SearchIT();
+        }
+
         /* TO ADD:
-         * https://jobs.labcorp.com/category/information-technology-jobs/668/4482/1 // do url, then filter by ID and UT
-         * http://www.barrettbusiness.com/branches/location/ID/idaho-falls
-         * https://rn21.ultipro.com/FJM1000/JobBoard/SearchJobs.aspx?Page=Search // Maverik - search Job Family For IT and Technical
          * http://www.onsemi.com/PowerSolutions/content.do?id=16367 // ON Semiconductor
          * https://apply.fbijobs.gov/ // FBI 
          * https://employment.wellsfargo.com/psp/PSEA/APPLICANT_NW/HRMS/c/HRS_HRAM.HRS_APP_SCHJOB.GBL?FOCUS=Applicant // Wells Fargo
