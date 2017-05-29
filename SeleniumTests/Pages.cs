@@ -521,15 +521,9 @@ namespace SeleniumTests
             }
 
             // narrow list results
-            if (idaho != null)
-            {
-                idaho.Click();
-            }
+            if (idaho != null) idaho.Click();
 
-            if (utah != null)
-            {
-                utah.Click();
-            }
+            if (utah != null) utah.Click();
 
             wait.Until(d => FilterLabel.Displayed);
 
@@ -604,6 +598,64 @@ namespace SeleniumTests
                 driver.Close();
 
                 Assert.Inconclusive("No results were shown");
+            }
+        }
+    }
+
+    public class ONSemi
+    {
+        private IWebDriver driver;
+        private WebDriverWait wait;
+
+        public ONSemi(IWebDriver driver)
+        {
+            this.driver = driver;
+
+            PageFactory.InitElements(driver, this);
+
+            // wait for the page to load
+            wait = new WebDriverWait(driver, TimeSpan.FromSeconds(20));
+            wait.Until(d => (bool)((IJavaScriptExecutor)driver).ExecuteScript("return jQuery.active == 0"));
+            wait.Until(d => JobsAvailable.Displayed);
+        }
+
+        [FindsBy(How = How.Id, Using = "JOB_LOCALE-select")]
+        [CacheLookup]
+        private IWebElement JobsAvailable { get; set; }
+
+        [FindsBy(How = How.CssSelector, Using = ".no-results-info")]
+        [CacheLookup]
+        private IWebElement NoResults { get; set; }
+
+        [FindsBy(How = How.Id, Using = "LOCATION")]
+        [CacheLookup]
+        private IWebElement Location { get; set; }
+
+        [FindsBy(How = How.CssSelector, Using = "ul[style*=\"block\"]")]
+        [CacheLookup]
+        private IWebElement LocationSuggestions { get; set; } 
+
+        [FindsBy(How = How.CssSelector, Using = "ul[style*=\"block\"] li:first-of-type")]
+        [CacheLookup]
+        private IWebElement LocationSuggestionsFirstRow { get; set; } // First search suggestion in Location field 
+
+        public void SearchState(string state)
+        {
+            Assert.IsTrue(state.Length > 0, "Please specify a state");
+
+            Location.SendKeys(state);
+            wait.Until(d => (bool)((IJavaScriptExecutor)driver).ExecuteScript("return jQuery.active == 0"));
+            wait.Until(d => LocationSuggestions.Displayed);
+            wait.Until(d => LocationSuggestionsFirstRow.Displayed);
+
+            LocationSuggestionsFirstRow.Click();
+            wait.Until(d => (bool)((IJavaScriptExecutor)driver).ExecuteScript("return jQuery.active == 0"));
+
+            if(NoResults.Displayed)
+            {
+                driver.Close();
+
+                Assert.Inconclusive("no openings at this time");
             }
         }
     }

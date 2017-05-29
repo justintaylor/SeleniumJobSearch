@@ -146,8 +146,27 @@ namespace SeleniumTests
             page.SearchIT();
         }
 
+        [TestMethod]
+        public void ONSemiIdaho()
+        {
+            Driver.Url = "https://onsemi.taleo.net/careersection/on_ex/jobsearch.ftl?lang=en&src=CWS-1";
+
+            var page = new ONSemi(Driver);
+
+            page.SearchState("Idaho");
+        }
+
+        [TestMethod]
+        public void ONSemiUtah()
+        {
+            Driver.Url = "https://onsemi.taleo.net/careersection/on_ex/jobsearch.ftl?lang=en&src=CWS-1";
+
+            var page = new ONSemi(Driver);
+
+            page.SearchState("Utah");
+        }
+
         /* TO ADD:
-         * http://www.onsemi.com/PowerSolutions/content.do?id=16367 // ON Semiconductor
          * https://apply.fbijobs.gov/ // FBI 
          * https://employment.wellsfargo.com/psp/PSEA/APPLICANT_NW/HRMS/c/HRS_HRAM.HRS_APP_SCHJOB.GBL?FOCUS=Applicant // Wells Fargo
          */
