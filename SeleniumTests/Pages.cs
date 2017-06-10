@@ -23,7 +23,7 @@ namespace SeleniumTests
 
         [FindsBy(How = How.CssSelector, Using = ".content div h1")]
         [CacheLookup]
-        private IWebElement element { get; set; }
+        private IWebElement Element { get; set; }
 
         public AdvantageCreditUnion(IWebDriver driver)
         {
@@ -33,12 +33,12 @@ namespace SeleniumTests
 
             // wait for the page to load
             wait = new WebDriverWait(driver, TimeSpan.FromSeconds(10));
-            wait.Until(d => element.Displayed);
+            wait.Until(d => Element.Displayed);
         }
 
         public void CheckForJobs()
         {
-            if (element.Text == noOpenings)
+            if (Element.Text == noOpenings)
             {
                 // no openings, close page
                 driver.Close();
