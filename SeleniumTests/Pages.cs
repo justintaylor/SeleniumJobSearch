@@ -214,23 +214,41 @@ namespace SeleniumTests
         }
 
         private string zeroResults = "0 results";
+        // private string USA = "United States of America";
+        private string IT = "Information Technology";
+        private string ID = "ID-Idaho";
+        private string UT = "UT-Utah";
 
         [FindsBy(How = How.Id, Using = "ctl00_m_g_3f46ec34_e362_4676_8aa8_2b87e4a9900b_btnSearchRight")]
         [CacheLookup]
         private IWebElement Search { get; set; }
 
-
         [FindsBy(How = How.CssSelector, Using = "[data-id=ctl00_m_g_3f46ec34_e362_4676_8aa8_2b87e4a9900b_ddlCountry]")]
         [CacheLookup]
         private IWebElement Country { get; set; }
+
+        [FindsBy(How = How.CssSelector, Using = "div.ddlcountry .dropdown-menu.open ul li:nth-child(123) a")]
+        [CacheLookup]
+        private IWebElement CountryUSA { get; set; }
 
         [FindsBy(How = How.CssSelector, Using = "div.ddlcountry .dropdown-menu.open ul li:nth-child(1) a")]
         [CacheLookup]
         private IWebElement CountryDropdown { get; set; }
 
-        [FindsBy(How = How.CssSelector, Using = "div.ddlcountry .dropdown-menu.open ul li:nth-child(123) a")]
-        [CacheLookup]
-        private IWebElement CountryUSA { get; set; }
+        protected virtual By CountryListSelector
+        {
+            get { return By.CssSelector("div.ddlcountry .dropdown-menu.open ul li"); }
+        }
+
+        protected virtual By StateListSelector
+        {
+            get { return By.CssSelector("#recruitingLocationDiv .dropdown-menu ul li"); }
+        }
+
+        protected virtual By JobFamilyListSelector
+        {
+            get { return By.CssSelector("#ctl00_m_g_3f46ec34_e362_4676_8aa8_2b87e4a9900b > div.row.search-area > div.col-lg-3.col-md-4.col-sm-4 > div:nth-child(3) > div:nth-child(2) > div > div > div > ul > li"); }
+        }
 
         // --------------------------------------------------
 
@@ -238,79 +256,79 @@ namespace SeleniumTests
         [CacheLookup]
         private IWebElement Location { get; set; }
 
-        [FindsBy(How = How.CssSelector, Using = "#recruitingLocationDiv .dropdown-menu")]
+        [FindsBy(How = How.CssSelector, Using = "#recruitingLocationDiv .dropdown-menu.open ul")]
         [CacheLookup]
         private IWebElement LocationDropdown { get; set; }
-
-        [FindsBy(How = How.CssSelector, Using = "#recruitingLocationDiv .dropdown-menu ul li:nth-child(21) a")]
-        [CacheLookup]
-        private IWebElement LocationInputIdaho { get; set; }
-
-        [FindsBy(How = How.CssSelector, Using = "#recruitingLocationDiv .dropdown-menu ul li:nth-child(55) a")]
-        [CacheLookup]
-        private IWebElement LocationInputUtah { get; set; }
-
+        
         // --------------------------------------------------
 
         [FindsBy(How = How.CssSelector, Using = "[data-id=ctl00_m_g_3f46ec34_e362_4676_8aa8_2b87e4a9900b_ddlJobFamily]")]
         [CacheLookup]
         private IWebElement JobFamily { get; set; }
-
+        
         [FindsBy(How = How.CssSelector, Using = "#ctl00_m_g_3f46ec34_e362_4676_8aa8_2b87e4a9900b > div.row.search-area > div.col-lg-3.col-md-4.col-sm-4 > div:nth-child(3) > div:nth-child(2) > div > div > div > ul > li:nth-child(1) > a")]
         [CacheLookup]
         private IWebElement JobFamilyDropdown { get; set; }
+        
+        // --------------------------------------------------
 
-        [FindsBy(How = How.CssSelector, Using = "#ctl00_m_g_3f46ec34_e362_4676_8aa8_2b87e4a9900b > div.row.search-area > div.col-lg-3.col-md-4.col-sm-4 > div:nth-child(3) > div:nth-child(2) > div > div > div > ul > li:nth-child(15) > a")]
+        [FindsBy(How = How.CssSelector, Using = "#criteriaListCountry > li > span:first-child")]
         [CacheLookup]
-        private IWebElement JobFamilyInfoTech { get; set; }
+        private IWebElement CountryDisplay { get; set; }
+
+        [FindsBy(How = How.CssSelector, Using = "#ulUSA li span:first-of-type")]
+        [CacheLookup]
+        private IWebElement StateDisplay { get; set; }
+
+        [FindsBy(How = How.CssSelector, Using = "#criteriaListJobFamily li span:first-of-type")]
+        [CacheLookup]
+        private IWebElement JobFamilyDisplay { get; set; }
 
         // --------------------------------------------------
 
         [FindsBy(How = How.Id, Using = "ctl00_m_g_3f46ec34_e362_4676_8aa8_2b87e4a9900b_lblNumResults")]
         [CacheLookup]
         private IWebElement ResultsCount { get; set; }
-        
+
         public void SearchIdahoInfoTech()
         {
-            Country.Click();
-            wait.Until(d => CountryDropdown.Displayed);
-            CountryUSA.Click();
-
-            Location.Click();
-            wait.Until(d => LocationDropdown.Displayed);
-            LocationInputIdaho.SendKeys(Keys.Space);
-
-            JobFamily.Click();
-            wait.Until(d => JobFamilyDropdown.Displayed);
-            JobFamilyInfoTech.SendKeys(Keys.Space);
-
-            Search.Click();
-
-            wait.Until(d => ResultsCount.Text.Contains("results"));
-
-            if (ResultsCount.Text == zeroResults)
-            {
-                driver.Close();
-
-                Assert.Inconclusive("no openings at this time");
-            }
+            SearchInfoTech(ID);
         }
 
         public void SearchUtahInfoTech()
         {
+            SearchInfoTech(UT);
+        }
+
+        private void SearchInfoTech(string state)
+        {
             Country.Click();
             wait.Until(d => CountryDropdown.Displayed);
+
+            // using css selector for USA is faster...
             CountryUSA.Click();
 
-            wait.Until(d => Location.Displayed);
+            // but using linq is more reliable should the list change
+            // IList<IWebElement> countries = driver.FindElements(CountryListSelector);
+            // var usa = countries.First(e => e.Text.StartsWith(USA));
+            // usa.Click();
 
             Location.Click();
             wait.Until(d => LocationDropdown.Displayed);
-            LocationInputUtah.SendKeys(Keys.Space);
+            IList<IWebElement> states = driver.FindElements(StateListSelector);
+            var s = states.First(e => e.Text.StartsWith(state));
+            s.Click();
 
             JobFamily.Click();
             wait.Until(d => JobFamilyDropdown.Displayed);
-            JobFamilyInfoTech.SendKeys(Keys.Space);
+            IList<IWebElement> jobFamily = driver.FindElements(JobFamilyListSelector);
+            var it = jobFamily.First(e => e.Text.StartsWith(IT));
+            it.Click();
+
+            // Verify selections before searching
+            Assert.AreEqual("United States of America", CountryDisplay.Text);
+            Assert.AreEqual(state, StateDisplay.Text);
+            Assert.AreEqual("Information Technology", JobFamilyDisplay.Text);
 
             Search.Click();
 
@@ -342,6 +360,7 @@ namespace SeleniumTests
         }
 
         private string noJobs = "There were no jobs matching this query.";
+        private string IT = "Information Technology";
 
         [FindsBy(How = How.Id, Using = "res_newjoblist__res_candcriteria-a1ExpertisegcC__Field")]
         [CacheLookup]
@@ -361,7 +380,7 @@ namespace SeleniumTests
 
         public void SearchInfoTech()
         {
-            ExpertiseSelect.SelectByValue("10000007"); // Information Technology
+            ExpertiseSelect.SelectByText(IT);
 
             Search.Click();
             wait.Until(d => SearchSummary.Displayed);
